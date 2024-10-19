@@ -1,0 +1,19 @@
+name = "Practice App"
+description = "Plan track your music practice sessions"
+authors = ["Jon Yardley"]
+# repository = "https://github.com/jonyardley/practice_app/"
+
+[cores.shared]
+source = "shared"
+type_gen = "shared_types"
+crux_version = "0.6.3"
+
+[shells.cli]
+template = "cli"
+source = "cli"
+cores = ["shared"]
+
+[shells.iOS]
+template = "iOS"
+source = "iOS"
+cores = ["shared"]
