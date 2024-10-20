@@ -11,18 +11,36 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            Text("Exercises")
+            ExercisesView()
                 .tabItem {
                     Label("Exercises", systemImage: "pianokeys")
                 }
-            Text("Sessions")
+            SessionsView()
                 .tabItem {
                     Label("Sessions", systemImage: "clock")
                 }
-            Text("Settings")
+            SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
+        }
+    }
+
+    struct ExercisesView: View {
+        var body: some View {
+            Text("Exercises")
+        }
+    }
+
+    struct SessionsView: View {
+        var body: some View {
+            Text("Sessions")
+        }
+    }
+
+    struct SettingsView: View {
+        var body: some View {
+            Text("Settings")
         }
     }
 }
