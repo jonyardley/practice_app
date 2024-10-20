@@ -1,3 +1,4 @@
+/// A description
 import SharedTypes
 import SwiftUI
 
@@ -9,20 +10,19 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Crux Counter Example").font(.headline)
-            Text("Rust Core, Swift Shell (SwiftUI)").padding()
-            Text(String(core.view.text))
-                .foregroundColor(core.view.confirmed ? Color.black : Color.gray)
-                .padding()
-            HStack {
-                ActionButton(label: "Decrement", color: .yellow) {
-                    core.update(.decrement)
+        TabView {
+            Text("Exercises")
+                .tabItem {
+                    Label("Exercises", systemImage: "pianokeys")
                 }
-                ActionButton(label: "Increment", color: .red) {
-                    core.update(.increment)
+            Text("Sessions")
+                .tabItem {
+                    Label("Sessions", systemImage: "clock")
                 }
-            }
+            Text("Settings")
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
         }
     }
 }
