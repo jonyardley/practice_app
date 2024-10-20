@@ -1,6 +1,4 @@
 mod core;
-mod http;
-mod sse;
 
 use std::sync::Arc;
 
@@ -16,7 +14,6 @@ enum Command {
     Get,
     Inc,
     Dec,
-    Watch,
 }
 
 impl From<Command> for Event {
@@ -25,7 +22,6 @@ impl From<Command> for Event {
             Command::Get => Event::Get,
             Command::Inc => Event::Increment,
             Command::Dec => Event::Decrement,
-            Command::Watch => Event::StartWatch,
         }
     }
 }
@@ -50,18 +46,14 @@ async fn main() -> Result<()> {
 
     let core = core::new();
     let event = command.into();
-    let (tx, rx) = unbounded::<Effect>();
+    let (tx, _rx) = unbounded::<Effect>();
 
     core::update(&core, event, &Arc::new(tx))?;
 
-    while let Ok(effect) = rx.recv() {
-        if let Effect::Render(_) = effect {
-            let view = core.view();
+    let view = core.view();
 
-            if view.confirmed {
-                println!("{text}", text = view.text);
-            }
-        }
+    if view.confirmed {
+        println!("{text}", text = view.text);
     }
 
     Ok(())

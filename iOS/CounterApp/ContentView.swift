@@ -6,7 +6,6 @@ struct ContentView: View {
 
     init(core: Core) {
         self.core = core
-        core.update(.startWatch)
     }
 
     var body: some View {
