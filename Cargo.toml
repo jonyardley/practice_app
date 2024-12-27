@@ -1,9 +1,5 @@
 [workspace]
-members = [
-    "cli",
-    "shared_types",
-    "shared"
-]
+members = ["shared_types", "shared"]
 resolver = "1"
 
 [workspace.package]

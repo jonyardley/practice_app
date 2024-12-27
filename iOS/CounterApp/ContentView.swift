@@ -11,11 +11,11 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            ExercisesView()
+            ExercisesView(core: core)
                 .tabItem {
                     Label("Exercises", systemImage: "pianokeys")
                 }
-            SessionsView()
+            SessionsView(core: core)
                 .tabItem {
                     Label("Sessions", systemImage: "clock")
                 }
@@ -27,18 +27,8 @@ struct ContentView: View {
     }
 
     struct ExercisesView: View {
-        let majorScales: [String] = [
-            "C Major", "G Major", "D Major", "A Major", "E Major", "B Major",
-            "F# Major / Gb Major", "C# Major / Db Major", "G# Major / Ab Major",
-            "D# Major / Eb Major", "A# Major / Bb Major", "F Major",
-        ]
-
-        let minorScales: [String] = [
-            "A Minor", "E Minor", "B Minor", "F# Minor / Gb Minor", "C# Minor / Db Minor",
-            "G# Minor / Ab Minor",
-            "D# Minor / Eb Minor", "A# Minor / Bb Minor", "F Minor", "C Minor", "G Minor",
-            "D Minor",
-        ]
+        @ObservedObject var core: Core
+        @State private var newExersizeName: String = ""
 
         var body: some View {
             VStack(alignment: .leading) {
@@ -47,27 +37,38 @@ struct ContentView: View {
                     .padding(.bottom, 10)
                     .padding(.leading)
 
-                List {
-                    Section(header: Text("Major Scales")) {
-                        ForEach(majorScales, id: \.self) { scale in
-                            HStack {
-                                Text(scale)
-                                Spacer()
-                                CheckBoxView()
-                            }
-                        }
+                HStack {
+                    TextField("New Exersize", text: $newExersizeName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.leading)
+                    Button(action: {
+                        core.update(.addExersize($newExersizeName.wrappedValue))
+                        newExersizeName = ""
+                    }) {
+                        Text("Add")
+                            .fontWeight(.bold)
+                            .font(.body)
+                            .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                            .padding(.trailing)
                     }
+                }
+                .padding(.bottom, 10)
 
-                    Section(header: Text("Minor Scales")) {
-                        ForEach(minorScales, id: \.self) { scale in
+                List {
+                    Section(header: Text("Your Exersizes")) {
+                        ForEach(core.view.exersizes, id: \.self.id) { exersize in
                             HStack {
-                                Text(scale)
-                                Spacer()
-                                CheckBoxView()
+                                Text(exersize.name)
+                                //Spacer()
+                                //CheckBoxView()
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -86,8 +87,48 @@ struct ContentView: View {
     }
 
     struct SessionsView: View {
+        @ObservedObject var core: Core
+        @State private var newSessionName: String = ""
+
         var body: some View {
-            Text("Sessions")
+            VStack(alignment: .leading) {
+                Text("Sessions")
+                    .font(.largeTitle)
+                    .padding(.bottom, 10)
+                    .padding(.leading)
+
+                HStack {
+                    TextField("New Session", text: $newSessionName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.leading)
+                    Button(action: {
+                        core.update(.addSession($newSessionName.wrappedValue))
+                        newSessionName = ""
+                    }) {
+                        Text("Add")
+                            .fontWeight(.bold)
+                            .font(.body)
+                            .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                            .padding(.trailing)
+                    }
+                }
+                .padding(.bottom, 10)
+
+                List {
+                    Section(header: Text("Your Sessions")) {
+                        ForEach(core.view.sessions, id: \.self.id) { session in
+                            HStack {
+                                Text(session.name)
+                                //Spacer()
+                                //CheckBoxView()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
