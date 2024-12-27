@@ -8,6 +8,7 @@ mod sessions;
 pub struct Model {
     exersizes: exersizes::Exersizes,
     sessions: sessions::Sessions,
+    devInit: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -21,6 +22,9 @@ pub enum Event {
     //Exersizes
     AddExersize(String),
     AddSession(String),
+
+    //Development
+    DevInit(),
 }
 
 #[cfg_attr(feature = "typegen", derive(crux_core::macros::Export))]
@@ -46,6 +50,15 @@ impl crux_core::App for App {
             }
             Event::AddSession(name) => {
                 model.sessions.add_session(name.clone());
+                caps.render.render();
+            }
+            Event::DevInit() => {
+                if model.devInit {
+                    return;
+                }
+                model.exersizes.add_exersize("Scales".to_string());
+                model.sessions.add_session("Jazz Technique".to_string());
+                model.devInit = true;
                 caps.render.render();
             }
         }

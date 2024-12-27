@@ -4,20 +4,22 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var core: Core
+    var devInit: Bool = false
 
     init(core: Core) {
         self.core = core
+        self.core.update(.devInit)
     }
 
     var body: some View {
         TabView {
-            ExercisesView(core: core)
-                .tabItem {
-                    Label("Exercises", systemImage: "pianokeys")
-                }
             SessionsView(core: core)
                 .tabItem {
                     Label("Sessions", systemImage: "clock")
+                }
+            ExercisesView(core: core)
+                .tabItem {
+                    Label("Exercises", systemImage: "pianokeys")
                 }
             SettingsView()
                 .tabItem {
@@ -91,39 +93,41 @@ struct ContentView: View {
         @State private var newSessionName: String = ""
 
         var body: some View {
-            VStack(alignment: .leading) {
-                Text("Sessions")
-                    .font(.largeTitle)
-                    .padding(.bottom, 10)
-                    .padding(.leading)
-
-                HStack {
-                    TextField("New Session", text: $newSessionName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+            NavigationView {
+                VStack(alignment: .leading) {
+                    Text("Sessions")
+                        .font(.largeTitle)
+                        .padding(.bottom, 10)
                         .padding(.leading)
-                    Button(action: {
-                        core.update(.addSession($newSessionName.wrappedValue))
-                        newSessionName = ""
-                    }) {
-                        Text("Add")
-                            .fontWeight(.bold)
-                            .font(.body)
-                            .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .foregroundColor(.white)
-                            .padding(.trailing)
-                    }
-                }
-                .padding(.bottom, 10)
 
-                List {
-                    Section(header: Text("Your Sessions")) {
-                        ForEach(core.view.sessions, id: \.self.id) { session in
-                            HStack {
-                                Text(session.name)
-                                //Spacer()
-                                //CheckBoxView()
+                    HStack {
+                        TextField("New Session", text: $newSessionName)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.leading)
+                        Button(action: {
+                            core.update(.addSession($newSessionName.wrappedValue))
+                            newSessionName = ""
+                        }) {
+                            Text("Add")
+                                .fontWeight(.bold)
+                                .font(.body)
+                                .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .foregroundColor(.white)
+                                .padding(.trailing)
+                        }
+                    }
+                    .padding(.bottom, 10)
+
+                    List {
+                        Section(header: Text("Your Sessions")) {
+                            ForEach(core.view.sessions, id: \.self.id) { session in
+                                NavigationLink(destination: SessionDetailView(session: session)) {
+                                    HStack {
+                                        Text(session.name)
+                                    }
+                                }
                             }
                         }
                     }
@@ -136,6 +140,35 @@ struct ContentView: View {
         var body: some View {
             Text("Settings")
         }
+    }
+}
+
+struct SessionDetailView: View {
+    var session: Session
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(session.name)
+                .font(.largeTitle)
+                .padding(.bottom, 10)
+                .padding(.leading)
+
+            Button(action: {
+                //core.update(.addSession($newSessionName.wrappedValue))
+                //newSessionName = ""
+            }) {
+                Text("Add/Edit Exersizes")
+                    .fontWeight(.bold)
+                    .font(.body)
+                    .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+                    .padding(.trailing)
+            }
+            Spacer()
+        }
+        .navigationBarTitle(Text("Session Details"), displayMode: .inline)
     }
 }
 

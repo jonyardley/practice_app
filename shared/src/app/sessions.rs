@@ -4,9 +4,6 @@ use serde::{Deserialize, Serialize};
 pub struct Session {
     pub id: u32,
     pub name: String,
-    // pub routeine_id: u32,
-    // pub start_time: String,
-    // pub end_time: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
